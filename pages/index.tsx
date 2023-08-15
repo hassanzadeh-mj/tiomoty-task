@@ -1,21 +1,16 @@
 import Head from 'next/head'
-import dynamic from "next/dynamic";
-import {message, Layout} from "antd";
-import {useEffect, useState} from "react";
+import {message, Card, Skeleton, Row, Col} from "antd";
+import {Fragment, useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import axios from "axios";
 import axiosClient from "@/services/axios";
 import {IPostsResponse} from "@/utils/post";
+const { Meta } = Card;
 
-
-
-const Posts = dynamic(() => import('../components/posts'), {ssr: false})
 export default function Home() {
     const [messageApi, contextHolder] = message.useMessage();
     const [posts, setPosts] = useState<Partial<IPostsResponse[]> | null>(null)
     const router = useRouter()
-
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
@@ -26,12 +21,14 @@ export default function Home() {
 
     }, [])
 
-
     function search() {
-        setLoading(true)
         axiosClient.get('posts').then((response) => {
+            if (loading)
+                setLoading(false)
+
             setPosts(response.data)
-        }).catch(error => {
+
+        }).catch(_=> {
             messageApi.error({
                 content: 'امکان نمایش پست ها وجود ندارد'
             })
@@ -47,14 +44,27 @@ export default function Home() {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
-
-            <div style={{width: '100vh', height: '100vh'}}>
+            <main className={'baseContainer'}>
                 {contextHolder}
+                <Row justify={'center'} align={'middle'} gutter={[16, 0]}
+                     style={{width: '100%', height: '100%', maxWidth: '992px'}}>
                 {
-                    posts?.map(i => <p>{i?.title}</p>)
-                }
-                asddasdd
-            </div>
+                    posts?.map(post => (
+                        <Fragment key={post?.id}>
+                        <Col >
+                           {/* Note :به دلیل این که گفته بودین روی پست کلیک کرد جابجا شود*/}
+                        <Card onClick={()=>{router.push(`/post/${post?.id}`)}}
+                            style={{ width: 300, marginTop: 16 }}
+                            cover={<img alt={post?.title} src={post?.image} />}
+                            hoverable>
+                            <Meta title={post?.title} description={`${post?.content.slice(0,150)}...`} />
+                            <Skeleton loading={loading}/>
+                        </Card>
+                        </Col>
+                        </Fragment>
+                    ))}
+                </Row>
+            </main>
         </>
     )
 }
