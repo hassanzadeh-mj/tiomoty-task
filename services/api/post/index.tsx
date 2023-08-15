@@ -1,6 +1,6 @@
 import axiosClient from "@/services/axios";
 
-export function Posts( ) {
+export function GetAllPosts( ) {
     return axiosClient
         .get<any>("posts")
         .then(responseBody => ({

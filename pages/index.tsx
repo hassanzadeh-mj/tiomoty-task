@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import {Posts} from "@/services/agent";
+import {GetAllPosts} from "@/services/agent";
 import {Col, message, Row} from "antd";
 
 interface IPostsResponse {
@@ -22,12 +22,17 @@ export default function Home() {
 
   useEffect(() => {
     search()
+    setInterval(() => {
+      search()
+    }, 10000);
+
   }, [request])
+
 
   function search() {
     setLoading(true)
 
-    Posts().then(async data => {
+    GetAllPosts().then(async data => {
       setLoading(false)
 
       if (data.successful) {
@@ -51,7 +56,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+<main>
+  <Posts/>
+</main>
     </>
   )
 }
