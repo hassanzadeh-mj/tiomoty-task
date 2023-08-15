@@ -1,51 +1,7 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
-import {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {GetAllPosts} from "@/services/agent";
-import {Col, message, Row} from "antd";
-
-interface IPostsResponse {
-
-}
+import dynamic from "next/dynamic";
+const Posts = dynamic(() => import('../components/posts'), { ssr: false })
 export default function Home() {
-  const [messageApi, contextHolder] = message.useMessage();
-  const [posts,setPosts] =useState<IPostsResponse | null>(null)
-  const router = useRouter()
-
-  const [loading, setLoading] = useState(false);
-
-  const [request, setRequest] = useState<any>(null);
-
-
-  useEffect(() => {
-    search()
-    setInterval(() => {
-      search()
-    }, 10000);
-
-  }, [request])
-
-
-  function search() {
-    setLoading(true)
-
-    GetAllPosts().then(async data => {
-      setLoading(false)
-
-      if (data.successful) {
-        setPosts(prv => data.content ?? prv)
-      }
-      else {
-        messageApi.error({
-          content: data.title.optional('امکان نمایش پست ها وجود ندارد')
-        })
-      }
-    })
-
-  }
 
 
   return (
