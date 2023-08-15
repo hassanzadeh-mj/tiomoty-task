@@ -2,7 +2,9 @@ import {message} from "antd";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {GetAllPosts} from "@/services/api/post";
+interface IPostsResponse {
 
+}
 const Posts = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const [posts,setPosts] =useState<IPostsResponse | null>(null)
