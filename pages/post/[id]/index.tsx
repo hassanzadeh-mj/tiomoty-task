@@ -15,6 +15,8 @@ import {PlusOutlined} from "@ant-design/icons";
 import CustomModal from "@/components/modal";
 
 const Post = () => {
+
+    //region <<< useState >>>
     const router = useRouter()
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage();
@@ -38,20 +40,6 @@ const Post = () => {
             description: 'web Developer'
         },
     ])
-
-    useEffect(() => {
-        if (!router.isReady) return
-
-        axiosClient.get(`posts/${router.query.id}`).then((response) => {
-            setPost(response.data)
-            setLoading(false)
-        }).catch(_ => {
-            messageApi.error({
-                content: 'امکان نمایش پست ها وجود ندارد'
-            })
-        });
-    }, [router.isReady])
-
 
     const inputs = [
         {
@@ -104,6 +92,28 @@ const Post = () => {
             ]
         }
     ]
+
+//endregion
+
+    //region <<< useEffect >>>
+
+    useEffect(() => {
+        if (!router.isReady) return
+
+        axiosClient.get(`posts/${router.query.id}`).then((response) => {
+            setPost(response.data)
+            setLoading(false)
+        }).catch(_ => {
+            messageApi.error({
+                content: 'امکان نمایش پست ها وجود ندارد'
+            })
+        });
+    }, [router.isReady])
+
+//endregion
+
+    //region <<< function >>>
+
     const IconText = ({icon, text, onClick}: { icon: React.FC; text: string; onClick?: () => void }) => (
         <Space onClick={onClick} style={{cursor: 'pointer'}}>
             {React.createElement(icon)}
@@ -137,6 +147,9 @@ const Post = () => {
         onFinish: onFinish,
         onValuesChange:onValuesChange
     }
+
+    //endregion
+
     return (
         <main className={'baseContainer'}>
             {contextHolder}

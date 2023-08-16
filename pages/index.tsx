@@ -4,15 +4,20 @@ import {Fragment, useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import axiosClient from "@/services/axios";
 import {IPostsResponse} from "@/utils/post";
-const { Meta } = Card;
+
+const {Meta} = Card;
 
 export default function Home() {
+
+    //region <<< useState >>>
     const [messageApi, contextHolder] = message.useMessage();
     const [posts, setPosts] = useState<Partial<IPostsResponse[]> | null>(null)
     const router = useRouter()
     const [loading, setLoading] = useState(true);
 
+    //endregion
 
+    //region <<< useEffect >>>
     useEffect(() => {
         search()
         setInterval(() => {
@@ -21,6 +26,9 @@ export default function Home() {
 
     }, [])
 
+    //endregion
+
+    //region <<< function >>>
     function search() {
         axiosClient.get('posts').then((response) => {
             if (loading)
@@ -28,13 +36,15 @@ export default function Home() {
 
             setPosts(response.data)
 
-        }).catch(_=> {
+        }).catch(_ => {
             messageApi.error({
                 content: 'امکان نمایش پست ها وجود ندارد'
             })
         });
 
     }
+
+//endregion
 
     return (
         <>
@@ -48,21 +58,23 @@ export default function Home() {
                 {contextHolder}
                 <Row justify={'center'} align={'middle'} gutter={[16, 0]}
                      style={{width: '100%', height: '100%', maxWidth: '992px'}}>
-                {
-                    posts?.map(post => (
-                        <Fragment key={post?.id}>
-                        <Col >
-                           {/* Note :به دلیل این که گفته بودین روی پست کلیک کرد جابجا شود*/}
-                        <Card onClick={()=>{router.push(`/post/${post?.id}`)}}
-                            style={{ width: 300, marginTop: 16 }}
-                            cover={<img alt={post?.title} src={post?.image} />}
-                            hoverable>
-                            <Meta title={post?.title} description={`${post?.content.slice(0,150)}...`} />
-                            <Skeleton loading={loading}/>
-                        </Card>
-                        </Col>
-                        </Fragment>
-                    ))}
+                    {
+                        posts?.map(post => (
+                            <Fragment key={post?.id}>
+                                <Col>
+                                    {/* Note :به دلیل این که گفته بودین روی پست کلیک کرد جابجا شود*/}
+                                    <Card onClick={() => {
+                                        router.push(`/post/${post?.id}`)
+                                    }}
+                                          style={{width: 300, marginTop: 16}}
+                                          cover={<img alt={post?.title} src={post?.image}/>}
+                                          hoverable>
+                                        <Meta title={post?.title} description={`${post?.content.slice(0, 150)}...`}/>
+                                        <Skeleton loading={loading}/>
+                                    </Card>
+                                </Col>
+                            </Fragment>
+                        ))}
                 </Row>
             </main>
         </>
