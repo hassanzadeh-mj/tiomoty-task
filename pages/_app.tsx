@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import {Col, ConfigProvider, Row, Spin} from 'antd';
 import type {AppProps} from 'next/app';
-import theme from './themeConfig';
-import '@/styles/globals.css'
+import '../styles/globals.css'
 import {Router} from "next/router";
 
 const App = ({Component, pageProps}: AppProps) => {
@@ -14,7 +13,7 @@ const App = ({Component, pageProps}: AppProps) => {
         setloading(false)
     })
     return (
-        <ConfigProvider theme={theme}>
+        <ConfigProvider >
             {loading
                 ? <main style={{
                     width: '100%', height: '100vh', overflowY: 'scroll', overflowX: 'hidden'
